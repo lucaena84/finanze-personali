@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finanze Personali 2026</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.6.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f5;color:#1a1a1a;min-height:100vh}
+:root{--bg:#fff;--bg2:#f5f5f5;--bg3:#eee;--border:#e0e0e0;--border2:#ccc;--text:#1a1a1a;--text2:#555;--text3:#888;--radius:8px;--radius-lg:12px;--pos:#1D9E75;--neg:#E24B4A;--warn:#BA7517;--blue:#378ADD;--blue-dark:#185FA5}
+@media(prefers-color-scheme:dark){:root{--bg:#1e1e1e;--bg2:#141414;--bg3:#2a2a2a;--border:#333;--border2:#444;--text:#f0f0f0;--text2:#aaa;--text3:#666}body{background:#141414;color:#f0f0f0}}
+.page{padding:1rem;max-width:1100px;margin:0 auto}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:1.5rem;overflow-x:auto}
+.tab{padding:8px 14px;font-size:13px;cursor:pointer;border:none;background:none;color:var(--text2);border-bottom:2px solid transparent;white-space:nowrap}
+.tab.active{color:var(--text);border-bottom:2px solid var(--blue);font-weight:500}
+.section{display:none}.section.active{display:block}
+.card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-bottom:1rem}
+.card h3{font-size:12px;font-weight:500;color:var(--text2);margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em}
+.metric{background:var(--bg2);border-radius:var(--radius);padding:.85rem}
+.metric label{font-size:11px;color:var(--text2);display:block;margin-bottom:3px}
+.metric .val{font-size:19px;font-weight:500;color:var(--text)}
+.metric .val.pos{color:var(--pos)}.metric .val.neg{color:var(--neg)}
+.metric .sub{font-size:11px;color:var(--text3);margin-top:2px}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:1rem}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1rem}
+.g2c{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+@media(max-width:600px){.g2c{grid-template-columns:1fr}.g3{grid-template-columns:1fr}}
+.row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:13px}
+.row:last-child{border-bottom:none}
+.row .lbl{color:var(--text2)}.row .amt{font-weight:500}
+.pos{color:var(--pos)}.neg{color:var(--neg)}.warn{color:var(--warn)}
+.badge{display:inline-block;padding:3px 10px;border-radius:var(--radius);font-size:12px;font-weight:500}
+.badge.ok{background:#E1F5EE;color:#0F6E56}.badge.bad{background:#FCEBEB;color:#A32D2D}
+.badge.entrata{background:#E1F5EE;color:#0F6E56}.badge.uscita{background:#FCEBEB;color:#A32D2D}
+.prog{height:7px;background:var(--bg3);border-radius:4px;overflow:hidden;margin-top:5px}
+.prog-bar{height:100%;border-radius:4px;transition:width .4s}
+.edit-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;gap:12px}
+.edit-row:last-child{border-bottom:none}
+.edit-row .lbl{color:var(--text2);flex:1}
+input[type=number],input[type=text],input[type=password],select{padding:6px 10px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--bg);color:var(--text);font-size:13px;outline:none}
+input[type=number]:focus,input[type=text]:focus,input[type=password]:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(55,138,221,.15)}
+.edit-row input[type=number]{width:120px}
+.btn{background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius);padding:7px 14px;cursor:pointer;font-size:13px;color:var(--text)}
+.btn:hover{background:var(--bg2)}
+.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn.primary:hover{background:var(--blue-dark)}
+.btn.danger{background:#FCEBEB;color:#A32D2D;border-color:#F09595}
+.patr-block{border-radius:var(--radius);padding:.75rem;background:var(--bg2);margin-bottom:6px}
+.patr-block label{font-size:11px;color:var(--text2);display:block;margin-bottom:2px}
+.patr-block .v{font-size:15px;font-weight:500;color:var(--text)}
+.patr-block .s{font-size:11px;color:var(--text3);margin-top:1px}
+.drop-zone{border:1.5px dashed var(--border2);border-radius:var(--radius-lg);padding:2rem 1rem;text-align:center;cursor:pointer;background:var(--bg2)}
+.drop-zone:hover{background:#e8f1fb;border-color:var(--blue)}
+.status-bar{padding:8px 12px;border-radius:var(--radius);font-size:13px;margin-bottom:1rem;display:none}
+.status-bar.ok{background:#E1F5EE;color:#0F6E56;display:block}
+.status-bar.err{background:#FCEBEB;color:#A32D2D;display:block}
+.alert-box{padding:10px 14px;border-radius:var(--radius);font-size:13px;margin-bottom:12px}
+.alert-box.err{background:#FCEBEB;color:#A32D2D;border:1px solid #F09595}
+.alert-box.ok{background:#E1F5EE;color:#0F6E56;border:1px solid #9FE1CB}
+.pw-wrap{position:relative;display:flex;align-items:center}
+.pw-wrap input{flex:1;padding-right:38px}
+.pw-toggle{position:absolute;right:8px;background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px;padding:0}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:7px 8px;font-weight:500;color:var(--text2);font-size:11px;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--border)}
+td{padding:7px 8px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg2)}
+.filter-row{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;align-items:center}
+.page-nav{display:flex;gap:6px;align-items:center;margin-top:10px;font-size:13px}
+#login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div style="width:100%;max-width:360px">
+    <div style="text-align:center;margin-bottom:2rem">
+      <div style="width:52px;height:52px;border-radius:50%;background:#E6F1FB;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem">
+        <i class="ti ti-lock" style="font-size:24px;color:#185FA5"></i>
+      </div>
+      <h2 style="font-size:20px;font-weight:500;margin-bottom:4px">Finanze Personali</h2>
+      <p style="font-size:13px;color:var(--text2)">Inserisci la password per accedere</p>
+    </div>
+    <div class="card" style="padding:1.5rem">
+      <div id="login-alert" style="display:none"></div>
+      <div style="margin-bottom:1rem">
+        <label style="font-size:13px;color:var(--text2);display:block;margin-bottom:6px">Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="login-pw" placeholder="••••••••" style="width:100%" onkeydown="if(event.key==='Enter')doLogin()">
+          <button class="pw-toggle" onclick="togglePw('login-pw',this)"><i class="ti ti-eye"></i></button>
+        </div>
+      </div>
+      <button class="btn primary" style="width:100%;padding:10px" onclick="doLogin()">
+        <i class="ti ti-arrow-right" style="margin-right:6px"></i>Accedi
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- PORTALE -->
+<div id="portal-screen" style="display:none">
+<div class="page">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+    <h2 style="font-size:20px;font-weight:500"><i class="ti ti-chart-bar" style="margin-right:8px"></i>Finanze Personali 2026</h2>
+    <button class="btn" onclick="doLogout()" style="font-size:12px;padding:5px 12px"><i class="ti ti-logout" style="margin-right:4px"></i>Esci</button>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('dashboard',this)"><i class="ti ti-home" style="margin-right:4px"></i>Dashboard</button>
+    <button class="tab" onclick="showTab('conti',this)"><i class="ti ti-wallet" style="margin-right:4px"></i>Conti</button>
+    <button class="tab" onclick="showTab('spese',this)"><i class="ti ti-receipt" style="margin-right:4px"></i>Spese</button>
+    <button class="tab" onclick="showTab('cc',this)"><i class="ti ti-credit-card" style="margin-right:4px"></i>Carta</button>
+    <button class="tab" onclick="showTab('banca',this)"><i class="ti ti-building-bank" style="margin-right:4px"></i>Import banca</button>
+    <button class="tab" onclick="showTab('impostazioni',this)"><i class="ti ti-settings" style="margin-right:4px"></i>Impostazioni</button>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="section active">
+    <div class="g2" id="kpi-top"></div>
+    <div class="g3">
+      <div class="card" style="margin-bottom:0">
+        <h3><i class="ti ti-building-bank" style="margin-right:4px"></i>Patrimonio dettaglio</h3>
+        <div id="patr-detail"></div>
+        <div class="row" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
+          <span class="lbl" style="font-weight:500">Totale netto</span>
+          <span id="patr-tot" class="amt pos" style="font-size:16px">—</span>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:0">
+        <h3><i class="ti ti-trending-up" style="margin-right:4px"></i>Risparmio 2026</h3>
+        <div id="dash-situ"></div>
+        <div style="margin-top:10px">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:3px">
+            <span>Progresso obiettivo</span><span id="prog-pct">0%</span>
+          </div>
+          <div class="prog"><div class="prog-bar" id="prog-bar" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:0">
+        <h3><i class="ti ti-radar" style="margin-right:4px"></i>Indicatori chiave</h3>
+        <div id="dash-ind"></div>
+      </div>
+    </div>
+    <div class="g2c">
+      <div class="card" style="margin-bottom:0">
+        <h3><i class="ti ti-cash" style="margin-right:4px"></i>Entrate e spese mensili</h3>
+        <div id="dash-budget"></div>
+      </div>
+      <div class="card" style="margin-bottom:0">
+        <h3><i class="ti ti-credit-card" style="margin-right:4px"></i>Carta di credito</h3>
+        <div id="dash-cc"></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:0">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <h3 style="margin-bottom:0"><i class="ti ti-history" style="margin-right:4px"></i>Storico risparmi annuali</h3>
+        <div style="display:flex;gap:12px;font-size:11px;color:var(--text2)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5DCAA5;display:inline-block"></span>Risparmio</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:2px;background:#378ADD;display:inline-block;vertical-align:middle"></span>Patrimonio</span>
+        </div>
+      </div>
+      <div style="position:relative;width:100%;height:220px">
+        <canvas id="chartStorico"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTI -->
+  <div id="conti" class="section">
+    <div class="card"><h3>Conti correnti</h3>
+      <div class="edit-row"><span class="lbl">Conto corrente</span><input type="number" id="conto1" step="0.01"></div>
+      <div class="edit-row"><span class="lbl">Cash</span><input type="number" id="conto2" step="0.01"></div>
+      <button class="btn primary" style="margin-top:10px" onclick="saveConti()"><i class="ti ti-device-floppy" style="margin-right:6px"></i>Salva</button>
+    </div>
+    <div class="card"><h3>MoneyFarm</h3>
+      <div class="edit-row"><span class="lbl">Investito</span><input type="number" id="mf_inv" step="0.01"></div>
+      <div class="edit-row"><span class="lbl">Valore attuale</span><input type="number" id="mf_now" step="0.01" oninput="liveConti()"></div>
+      <div class="row" style="margin-top:6px"><span class="lbl">Rendimento</span><span id="mf_perf" class="amt">—</span></div>
+      <button class="btn primary" style="margin-top:10px" onclick="saveConti()"><i class="ti ti-device-floppy" style="margin-right:6px"></i>Salva</button>
+    </div>
+    <div class="card"><h3>Xeon</h3>
+      <div class="edit-row"><span class="lbl">Investito</span><input type="number" id="xeon_inv" step="0.01"></div>
+      <div class="edit-row"><span class="lbl">Valore attuale</span><input type="number" id="xeon_now" step="0.01" oninput="liveConti()"></div>
+      <div class="row" style="margin-top:6px"><span class="lbl">Rendimento</span><span id="xeon_perf" class="amt">—</span></div>
+      <button class="btn primary" style="margin-top:10px" onclick="saveConti()"><i class="ti ti-device-floppy" style="margin-right:6px"></i>Salva</button>
+    </div>
+    <div class="card"><h3>Riepilogo patrimonio</h3>
+      <div class="row"><span class="lbl">Liquidità totale</span><span class="amt" id="tot_liq">—</span></div>
+      <div class="row"><span class="lbl">Investimenti (val. attuale)</span><span class="amt" id="tot_inv">—</span></div>
+      <div class="row"><span class="lbl" style="font-weight:500">Patrimonio netto</span><span class="amt pos" id="tot_net" style="font-size:17px">—</span></div>
+    </div>
+  </div>
+
+  <!-- SPESE -->
+  <div id="spese" class="section">
+    <div class="card"><h3>Entrate mensili</h3>
+      <div class="edit-row"><span class="lbl">Stipendio netto</span><input type="number" id="stipendio" step="1" oninput="liveSpese()"></div>
+      <div class="edit-row"><span class="lbl">Buoni pasto</span><input type="number" id="buoni_pasto" step="1" oninput="liveSpese()"></div>
+      <div class="edit-row"><span class="lbl">Guadagno annuo lordo</span><input type="number" id="guadagno_annuo" step="1"></div>
+      <button class="btn primary" style="margin-top:10px" onclick="saveSpese()"><i class="ti ti-device-floppy" style="margin-right:6px"></i>Salva</button>
+    </div>
+    <div class="card"><h3>Spese fisse mensili</h3>
+      <div id="spese-fisse-list"></div>
+      <button class="btn primary" style="margin-top:10px" onclick="saveSpese()"><i class="ti ti-device-floppy" style="margin-right:6px"></i>Salva</button>
+    </div>
+    <div class="card"><h3>Spese annuali</h3>
+      <div id="spese-annuali-list"></div>
+      <button class="btn primary" style="margin-top:10px" onclick="saveSpese()"><i class="ti ti-device-floppy" style="margin-right:6px"></i>Salva</button>
+    </div>
+    <div class="card"><h3>Riepilogo mensile</h3>
+      <div class="row"><span class="lbl">Totale entrate</span><span class="amt pos" id="tot_entrate">—</span></div>
+      <div class="row"><span class="lbl">Spese fisse</span><span class="amt neg" id="tot_spese">—</span></div>
+      <div class="row"><span class="lbl">Quota annuali/mese</span><span class="amt neg" id="tot_ann_mese">—</span></div>
+      <div class="row"><span class="lbl" style="font-weight:500">Risparmio mensile</span><span class="amt" id="risp_mensile" style="font-size:17px">—</span></div>
+      <div class="row"><span class="lbl">Risparmio annuale previsto</span><span class="amt" id="risp_annuale">—</span></div>
+    </div>
+  </div>
+
+  <!-- CARTA -->
+  <div id="cc" class="section">
+    <div class="card"><h3>Carta — mese corrente</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr 36px;gap:8px;padding:4px 0 8px;font-size:11px;color:var(--text2)"><span>Descrizione</span><span>Importo €</span><span></span></div>
+      <div id="cc-list-now"></div>
+      <button class="btn" style="margin-top:8px;font-size:12px" onclick="addCC('now')"><i class="ti ti-plus" style="margin-right:4px"></i>Aggiungi voce</button>
+      <div class="row" style="margin-top:12px"><span class="lbl" style="font-weight:500">Totale mese corrente</span><span class="amt neg" id="cc-tot-now">€ 0,00</span></div>
+    </div>
+    <div class="card"><h3>Carta — mese prossimo</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr 36px;gap:8px;padding:4px 0 8px;font-size:11px;color:var(--text2)"><span>Descrizione</span><span>Importo €</span><span></span></div>
+      <div id="cc-list-next"></div>
+      <button class="btn" style="margin-top:8px;font-size:12px" onclick="addCC('next')"><i class="ti ti-plus" style="margin-right:4px"></i>Aggiungi voce</button>
+      <div class="row" style="margin-top:12px"><span class="lbl" style="font-weight:500">Totale mese prossimo</span><span class="amt neg" id="cc-tot-next">€ 0,00</span></div>
+    </div>
+  </div>
+
+  <!-- IMPORT BANCA -->
+  <div id="banca" class="section">
+    <div id="banca-status" class="status-bar"></div>
+    <div class="card"><h3>Carica estratto Intesa Sanpaolo</h3>
+      <div class="drop-zone" id="drop-zone"
+        onclick="document.getElementById('file-input').click()"
+        ondragover="event.preventDefault();this.classList.add('drag')"
+        ondragleave="this.classList.remove('drag')"
+        ondrop="handleDrop(event)">
+        <i class="ti ti-file-spreadsheet" style="font-size:34px;color:var(--text2);display:block;margin-bottom:.6rem"></i>
+        <p style="font-size:14px;color:var(--text2);margin-bottom:4px">Trascina il file o clicca per selezionarlo</p>
+        <small style="font-size:12px;color:var(--text3)">lista_completa_XXXXXXXX.xlsx — esportato da Intesa Sanpaolo</small>
+      </div>
+      <input type="file" id="file-input" accept=".xlsx,.xls" style="display:none" onchange="handleFile(this.files[0])">
+    </div>
+    <div id="preview-card" class="card" style="display:none"><h3>Anteprima importazione</h3>
+      <div id="preview-info" style="font-size:13px;color:var(--text2);margin-bottom:10px"></div>
+      <div style="overflow-x:auto"><table id="preview-table"></table></div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn primary" onclick="importData()"><i class="ti ti-check" style="margin-right:6px"></i>Importa movimenti</button>
+        <button class="btn" onclick="clearPreview()"><i class="ti ti-x" style="margin-right:6px"></i>Annulla</button>
+      </div>
+    </div>
+    <div id="banca-content" style="display:none">
+      <div class="filter-row">
+        <select id="filter-mese" onchange="renderMovimenti()"><option value="">Tutti i mesi</option></select>
+        <select id="filter-cat" onchange="renderMovimenti()"><option value="">Tutte le categorie</option></select>
+        <select id="filter-tipo" onchange="renderMovimenti()">
+          <option value="">Entrate + Uscite</option>
+          <option value="entrata">Solo entrate</option>
+          <option value="uscita">Solo uscite</option>
+        </select>
+        <input type="text" id="filter-search" placeholder="Cerca operazione…" oninput="renderMovimenti()" style="flex:1;min-width:120px">
+        <button class="btn" onclick="exportCSV()" style="font-size:12px"><i class="ti ti-download" style="margin-right:4px"></i>CSV</button>
+      </div>
+      <div class="g2" id="banca-kpi"></div>
+      <div class="g2c">
+        <div class="card"><h3>Spese per categoria</h3>
+          <div style="position:relative;width:100%;height:240px"><canvas id="chartCat"></canvas></div>
+        </div>
+        <div class="card"><h3>Andamento mensile</h3>
+          <div style="position:relative;width:100%;height:240px"><canvas id="chartMesi"></canvas></div>
+        </div>
+      </div>
+      <div class="card"><h3>Movimenti</h3>
+        <div style="overflow-x:auto"><table id="mov-table"></table></div>
+        <div class="page-nav" id="page-nav"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IMPOSTAZIONI -->
+  <div id="impostazioni" class="section">
+    <div class="card" style="max-width:480px"><h3>Cambia password</h3>
+      <div id="pw-alert" style="display:none"></div>
+      <div style="margin-bottom:12px">
+        <label style="font-size:13px;color:var(--text2);display:block;margin-bottom:5px">Password attuale</label>
+        <div class="pw-wrap"><input type="password" id="pw-current" placeholder="••••••••" style="width:100%"><button class="pw-toggle" onclick="togglePw('pw-current',this)"><i class="ti ti-eye"></i></button></div>
+      </div>
+      <div style="margin-bottom:12px">
+        <label style="font-size:13px;color:var(--text2);display:block;margin-bottom:5px">Nuova password</label>
+        <div class="pw-wrap"><input type="password" id="pw-new" placeholder="Minimo 6 caratteri" style="width:100%"><button class="pw-toggle" onclick="togglePw('pw-new',this)"><i class="ti ti-eye"></i></button></div>
+      </div>
+      <div style="margin-bottom:16px">
+        <label style="font-size:13px;color:var(--text2);display:block;margin-bottom:5px">Conferma nuova password</label>
+        <div class="pw-wrap"><input type="password" id="pw-confirm" placeholder="Ripeti la nuova password" style="width:100%"><button class="pw-toggle" onclick="togglePw('pw-confirm',this)"><i class="ti ti-eye"></i></button></div>
+      </div>
+      <button class="btn primary" style="width:100%;padding:10px" onclick="changePassword()"><i class="ti ti-lock" style="margin-right:6px"></i>Aggiorna password</button>
+    </div>
+    <div class="card" style="max-width:480px;margin-top:0"><h3>Risparmio effettivo 2026</h3>
+      <div class="edit-row"><span class="lbl">Valore attuale (aggiornalo periodicamente)</span><input type="number" id="risp_eff_input" step="0.01"></div>
+      <div class="edit-row"><span class="lbl">Obiettivo annuale</span><input type="number" id="risp_prev_input" step="0.01"></div>
+      <button class="btn primary" style="margin-top:10px" onclick="saveRisp()"><i class="ti ti-device-floppy" style="margin-right:6px"></i>Salva e aggiorna dashboard</button>
+    </div>
+    <div class="card" style="max-width:480px;margin-top:0"><h3>Storico risparmi — modifica</h3>
+      <p style="font-size:12px;color:var(--text3);margin-bottom:10px">Modifica i valori storici e premi Salva per aggiornare il grafico in dashboard.</p>
+      <div id="storico-edit"></div>
+      <button class="btn primary" style="margin-top:12px" onclick="saveStorico()"><i class="ti ti-device-floppy" style="margin-right:6px"></i>Salva e aggiorna grafico</button>
+    </div>
+    <div class="card" style="max-width:480px;margin-top:0"><h3>Sessione</h3>
+      <div class="row"><span class="lbl">Accesso effettuato</span><span style="font-size:12px;color:var(--text2)" id="login-time">—</span></div>
+      <div class="row"><span class="lbl">Dati salvati in</span><span style="font-size:12px;color:var(--text2)">localStorage (browser locale)</span></div>
+      <button class="btn danger" style="margin-top:12px;font-size:12px" onclick="doLogout()"><i class="ti ti-logout" style="margin-right:6px"></i>Esci dal portale</button>
+    </div>
+  </div>
+
+</div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const DEFAULT_PW='12345678', STORAGE_KEY='fp_password', DATA_KEY='fp_data';
+const EUR=v=>(v<0?'-':'')+'€\u00a0'+Math.abs(v).toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2});
+const PCT=v=>(v>=0?'+':'')+Number(v).toFixed(2)+'%';
+const MESI=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+const COLORS=['#5DCAA5','#378ADD','#EF9F27','#E24B4A','#7F77DD','#D85A30','#1D9E75','#BA7517','#533049','#185FA5','#639922','#D4537E'];
+
+function getPW(){return localStorage.getItem(STORAGE_KEY)||DEFAULT_PW;}
+
+const DEFAULT_S={
+  conto1:7220.18,conto2:530,mf_inv:60000,mf_now:77446.84,xeon_inv:17954.45,xeon_now:18059.13,
+  stipendio:1900,buoni_pasto:150,guadagno_annuo:24600,risp_effettivi:6823.59,risp_previsti:5580,
+  spese_fisse:[
+    {n:'Mutuo',v:460},{n:'Energia elettrica',v:50},{n:'Acqua',v:10},{n:'Bombola',v:20},
+    {n:'ADSL',v:27},{n:'Mobile',v:10},{n:'Condominio',v:36},{n:'Benzina',v:94},
+    {n:'Market',v:150},{n:'Conti e carte',v:12},{n:'Parrucchiere',v:10},{n:'Dr Smile',v:120}
+  ],
+  spese_annuali:[
+    {n:'Assicurazione auto',v:600},{n:'Bollo',v:152},{n:'Revisione',v:40},{n:'Manutenzione caldaia',v:0},{n:'TARI',v:240}
+  ],
+  cc_now:[{d:'Carta credito Mag',v:273.31}],
+  cc_next:[{d:'Carta credito Giu',v:0}],
+  storico:[
+    {a:2019,r:1200,p:22000},{a:2020,r:3500,p:24000},{a:2021,r:5000,p:30000},
+    {a:2022,r:7200,p:42000},{a:2023,r:9800,p:55000},{a:2024,r:11200,p:77000},
+    {a:2025,r:11580,p:93000},{a:2026,r:6823,p:103206}
+  ]
+};
+
+function loadS(){
+  try{const d=localStorage.getItem(DATA_KEY);return d?JSON.parse(d):JSON.parse(JSON.stringify(DEFAULT_S));}
+  catch(e){return JSON.parse(JSON.stringify(DEFAULT_S));}
+}
+function saveS(){localStorage.setItem(DATA_KEY,JSON.stringify(S));}
+
+let S=loadS();
+let allMov=[],pendingRows=[],charts={},curPage=1;
+const PG=25;
+
+function calcoli(){
+  const liq=S.conto1+S.conto2, inv=S.mf_now+S.xeon_now, patr=liq+inv;
+  const totSF=S.spese_fisse.reduce((s,r)=>s+r.v,0);
+  const totAnn=S.spese_annuali.reduce((s,r)=>s+r.v,0);
+  const totAnnM=totAnn/12, totEnt=S.stipendio+S.buoni_pasto;
+  const rispM=totEnt-totSF-totAnnM, rispA=rispM*12;
+  const today=new Date();
+  const ggP=Math.floor((today-new Date(today.getFullYear(),0,1))/86400000);
+  const ggR=365-ggP, mR=ggR/30.44;
+  const spesaRim=totSF*mR+totAnn*(ggR/365);
+  const rispFine=S.risp_effettivi+rispM*mR;
+  const breakeven=patr+(totSF*12)+totAnn;
+  const ok=S.risp_effettivi>=S.risp_previsti;
+  const ccNow=S.cc_now.reduce((s,r)=>s+r.v,0);
+  const ccNext=S.cc_next.reduce((s,r)=>s+r.v,0);
+  const mfPerf=((S.mf_now-S.mf_inv)/S.mf_inv)*100;
+  const xPerf=((S.xeon_now-S.xeon_inv)/S.xeon_inv)*100;
+  return{liq,inv,patr,totSF,totAnn,totAnnM,totEnt,rispM,rispA,ggR,mR,spesaRim,rispFine,breakeven,ok,ccNow,ccNext,mfPerf,xPerf};
+}
+
+// --- AUTH ---
+function doLogin(){
+  const v=document.getElementById('login-pw').value;
+  const al=document.getElementById('login-alert');
+  if(v===getPW()){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('portal-screen').style.display='block';
+    document.getElementById('login-time').textContent=new Date().toLocaleString('it-IT');
+    initPortal();
+  } else {
+    al.className='alert-box err';
+    al.textContent='Password errata. Riprova.';
+    al.style.display='block';
+    document.getElementById('login-pw').value='';
+    document.getElementById('login-pw').focus();
+  }
+}
+function doLogout(){
+  document.getElementById('portal-screen').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('login-pw').value='';
+  document.getElementById('login-alert').style.display='none';
+}
+function togglePw(id,btn){
+  const i=document.getElementById(id);
+  const s=i.type==='text';
+  i.type=s?'password':'text';
+  btn.innerHTML=s?'<i class="ti ti-eye"></i>':'<i class="ti ti-eye-off"></i>';
+}
+function changePassword(){
+  const cur=document.getElementById('pw-current').value;
+  const nw=document.getElementById('pw-new').value;
+  const cf=document.getElementById('pw-confirm').value;
+  const al=document.getElementById('pw-alert');
+  const show=(m,t)=>{al.className='alert-box '+t;al.textContent=m;al.style.display='block';setTimeout(()=>al.style.display='none',4000);};
+  if(cur!==getPW()){show('Password attuale non corretta.','err');return;}
+  if(nw.length<6){show('La nuova password deve avere almeno 6 caratteri.','err');return;}
+  if(nw!==cf){show('Le due password non coincidono.','err');return;}
+  localStorage.setItem(STORAGE_KEY,nw);
+  ['pw-current','pw-new','pw-confirm'].forEach(id=>document.getElementById(id).value='');
+  show('Password aggiornata con successo!','ok');
+}
+
+// --- NAV ---
+function showTab(t,btn){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(t).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(t==='dashboard') renderStorico();
+  if(t==='banca'&&allMov.length) renderBancaCharts();
+}
+
+function initPortal(){
+  renderDashboard();
+  renderContiUI();
+  renderSpese();
+  renderCC();
+  document.getElementById('risp_eff_input').value=S.risp_effettivi;
+  document.getElementById('risp_prev_input').value=S.risp_previsti;
+  renderStoricoEdit();
+  setTimeout(renderStorico,120);
+}
+
+// --- DASHBOARD ---
+function renderDashboard(){
+  const c=calcoli();
+  document.getElementById('kpi-top').innerHTML=`
+    <div class="metric"><label>Patrimonio totale</label><div class="val">${EUR(c.patr)}</div><div class="sub">liquidità + investimenti</div></div>
+    <div class="metric"><label>Risparmio effettivo 2026</label><div class="val ${c.ok?'pos':'neg'}">${EUR(S.risp_effettivi)}</div><div class="sub">obiettivo ${EUR(S.risp_previsti)}</div></div>
+    <div class="metric"><label>Risparmio mensile calc.</label><div class="val ${c.rispM>=0?'pos':'neg'}">${EUR(c.rispM)}</div><div class="sub">entrate − tutte le spese</div></div>
+    <div class="metric"><label>Proiezione fine 2026</label><div class="val pos">${EUR(c.rispFine)}</div><div class="sub">stima a fine anno</div></div>`;
+
+  document.getElementById('patr-detail').innerHTML=`
+    <div class="patr-block"><label>Conto corrente</label><div class="v">${EUR(S.conto1)}</div></div>
+    <div class="patr-block"><label>Cash / contanti</label><div class="v">${EUR(S.conto2)}</div></div>
+    <div class="patr-block"><label>MoneyFarm</label><div class="v">${EUR(S.mf_now)}</div><div class="s">investito ${EUR(S.mf_inv)} &middot; rend. <span class="${c.mfPerf>=0?'pos':'neg'}">${PCT(c.mfPerf)}</span></div></div>
+    <div class="patr-block"><label>Xeon</label><div class="v">${EUR(S.xeon_now)}</div><div class="s">investito ${EUR(S.xeon_inv)} &middot; rend. <span class="${c.xPerf>=0?'pos':'neg'}">${PCT(c.xPerf)}</span></div></div>`;
+  document.getElementById('patr-tot').textContent=EUR(c.patr);
+
+  const pct=Math.min(100,Math.round((S.risp_effettivi/S.risp_previsti)*100));
+  document.getElementById('prog-pct').textContent=pct+'%';
+  const bar=document.getElementById('prog-bar');
+  bar.style.width=pct+'%';
+  bar.style.background=pct>=100?'#1D9E75':pct<50?'#E24B4A':'#BA7517';
+
+  document.getElementById('dash-situ').innerHTML=`
+    <div class="row"><span class="lbl">Effettivo ad oggi</span><span class="amt pos">${EUR(S.risp_effettivi)}</span></div>
+    <div class="row"><span class="lbl">Obiettivo annuale</span><span class="amt">${EUR(S.risp_previsti)}</span></div>
+    <div class="row"><span class="lbl">Δ vs obiettivo</span><span class="amt ${S.risp_effettivi-S.risp_previsti>=0?'pos':'neg'}">${EUR(S.risp_effettivi-S.risp_previsti)}</span></div>
+    <div class="row"><span class="lbl">Proiezione fine anno</span><span class="amt pos">${EUR(c.rispFine)}</span></div>`;
+
+  document.getElementById('dash-ind').innerHTML=`
+    <div class="row"><span class="lbl">Giorni restanti 2026</span><span class="amt">${Math.round(c.ggR)}</span></div>
+    <div class="row"><span class="lbl">Mesi restanti</span><span class="amt">${c.mR.toFixed(1)}</span></div>
+    <div class="row"><span class="lbl">Spesa mancante stimata</span><span class="amt">${EUR(c.spesaRim)}</span></div>
+    <div class="row"><span class="lbl">Break even patrimoniale</span><span class="amt">${EUR(c.breakeven)}</span></div>
+    <div class="row"><span class="lbl">Stabilità budget</span><span><span class="badge ${c.ok?'ok':'bad'}">${c.ok?'CI STAI DENTRO':'ATTENZIONE'}</span></span></div>`;
+
+  document.getElementById('dash-budget').innerHTML=`
+    <div class="row"><span class="lbl">Stipendio netto</span><span class="amt pos">${EUR(S.stipendio)}</span></div>
+    <div class="row"><span class="lbl">Buoni pasto</span><span class="amt pos">${EUR(S.buoni_pasto)}</span></div>
+    <div class="row"><span class="lbl">Totale entrate mensili</span><span class="amt pos">${EUR(c.totEnt)}</span></div>
+    <div class="row"><span class="lbl">Spese fisse mensili</span><span class="amt neg">-${EUR(c.totSF)}</span></div>
+    <div class="row"><span class="lbl">Quota spese annuali/mese</span><span class="amt neg">-${EUR(c.totAnnM)}</span></div>
+    <div class="row"><span class="lbl" style="font-weight:500">Risparmio mensile netto</span><span class="amt ${c.rispM>=0?'pos':'neg'}" style="font-size:15px">${EUR(c.rispM)}</span></div>`;
+
+  document.getElementById('dash-cc').innerHTML=`
+    <div class="row"><span class="lbl" style="font-weight:500">Mese corrente</span><span class="amt neg">-${EUR(c.ccNow)}</span></div>
+    <div style="padding:3px 0 10px 0">
+      ${S.cc_now.map(r=>`<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);padding:2px 0"><span>${r.d||'—'}</span><span>${EUR(r.v)}</span></div>`).join('')}
+    </div>
+    <div class="row" style="border-top:1px solid var(--border);padding-top:6px"><span class="lbl" style="font-weight:500">Mese prossimo</span><span class="amt neg">-${EUR(c.ccNext)}</span></div>
+    <div style="padding:3px 0 0 0">
+      ${S.cc_next.map(r=>`<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);padding:2px 0"><span>${r.d||'—'}</span><span>${EUR(r.v)}</span></div>`).join('')}
+    </div>`;
+}
+
+// --- GRAFICO STORICO ---
+function renderStorico(){
+  if(charts.stor) charts.stor.destroy();
+  charts.stor=new Chart(document.getElementById('chartStorico'),{
+    type:'bar',
+    data:{
+      labels:S.storico.map(r=>r.a),
+      datasets:[
+        {label:'Risparmio',data:S.storico.map(r=>r.r),backgroundColor:'#5DCAA5',borderRadius:4,yAxisID:'y1'},
+        {label:'Patrimonio',data:S.storico.map(r=>r.p),type:'line',borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,0.08)',pointRadius:4,tension:0.3,fill:true,yAxisID:'y2'}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        y1:{position:'left',ticks:{callback:v=>'€'+Math.round(v/1000)+'k',font:{size:10}}},
+        y2:{position:'right',grid:{drawOnChartArea:false},ticks:{callback:v=>'€'+Math.round(v/1000)+'k',font:{size:10}}}
+      }
+    }
+  });
+}
+
+function renderStoricoEdit(){
+  document.getElementById('storico-edit').innerHTML=S.storico.map((r,i)=>`
+    <div class="edit-row"><span class="lbl">${r.a}</span>
+      <div style="display:flex;gap:6px">
+        <div>
+          <div style="font-size:10px;color:var(--text2);margin-bottom:2px">Risparmio €</div>
+          <input type="number" step="1" value="${r.r}" style="width:90px" id="stor_r_${i}">
+        </div>
+        <div>
+          <div style="font-size:10px;color:var(--text2);margin-bottom:2px">Patrimonio €</div>
+          <input type="number" step="1" value="${r.p}" style="width:100px" id="stor_p_${i}">
+        </div>
+      </div>
+    </div>`).join('');
+}
+function saveStorico(){
+  S.storico.forEach((r,i)=>{
+    r.r=parseFloat(document.getElementById('stor_r_'+i).value)||r.r;
+    r.p=parseFloat(document.getElementById('stor_p_'+i).value)||r.p;
+  });
+  saveS(); renderStorico();
+}
+
+// --- CONTI ---
+function renderContiUI(){
+  ['conto1','conto2','mf_inv','mf_now','xeon_inv','xeon_now'].forEach(id=>document.getElementById(id).value=S[id]);
+  liveConti();
+}
+function liveConti(){
+  const mn=parseFloat(document.getElementById('mf_now').value)||S.mf_now;
+  const xn=parseFloat(document.getElementById('xeon_now').value)||S.xeon_now;
+  const mi=parseFloat(document.getElementById('mf_inv').value)||S.mf_inv;
+  const xi=parseFloat(document.getElementById('xeon_inv').value)||S.xeon_inv;
+  const c1=parseFloat(document.getElementById('conto1').value)||S.conto1;
+  const c2=parseFloat(document.getElementById('conto2').value)||S.conto2;
+  const mP=((mn-mi)/mi)*100, xP=((xn-xi)/xi)*100;
+  const upd=(id,v,cls)=>{const e=document.getElementById(id);if(e){e.textContent=v;if(cls)e.className='amt '+cls;}};
+  upd('mf_perf',PCT(mP),mP>=0?'pos':'neg');
+  upd('xeon_perf',PCT(xP),xP>=0?'pos':'neg');
+  upd('tot_liq',EUR(c1+c2));
+  upd('tot_inv',EUR(mn+xn));
+  upd('tot_net',EUR(c1+c2+mn+xn));
+}
+function saveConti(){
+  ['conto1','conto2','mf_inv','mf_now','xeon_inv','xeon_now'].forEach(id=>S[id]=parseFloat(document.getElementById(id).value)||0);
+  saveS(); liveConti(); renderDashboard();
+}
+
+// --- SPESE ---
+function renderSpese(){
+  ['stipendio','buoni_pasto','guadagno_annuo'].forEach(id=>document.getElementById(id).value=S[id]);
+  document.getElementById('spese-fisse-list').innerHTML=S.spese_fisse.map((r,i)=>
+    `<div class="edit-row"><span class="lbl">${r.n}</span><input type="number" step="1" value="${r.v}" oninput="S.spese_fisse[${i}].v=parseFloat(this.value)||0;liveSpese()"></div>`).join('');
+  document.getElementById('spese-annuali-list').innerHTML=S.spese_annuali.map((r,i)=>
+    `<div class="edit-row"><span class="lbl">${r.n} <small style="color:var(--text3)">(${EUR(r.v/12)}/mese)</small></span><input type="number" step="1" value="${r.v}" oninput="S.spese_annuali[${i}].v=parseFloat(this.value)||0;liveSpese()"></div>`).join('');
+  liveSpese();
+}
+function liveSpese(){
+  const c=calcoli();
+  const upd=(id,v,cls)=>{const e=document.getElementById(id);if(e){e.textContent=EUR(v);if(cls)e.className='amt '+cls;}};
+  upd('tot_entrate',c.totEnt);
+  upd('tot_spese',c.totSF);
+  upd('tot_ann_mese',c.totAnnM);
+  upd('risp_mensile',c.rispM,c.rispM>=0?'pos':'neg');
+  upd('risp_annuale',c.rispA,c.rispA>=0?'pos':'neg');
+}
+function saveSpese(){
+  S.stipendio=parseFloat(document.getElementById('stipendio').value)||0;
+  S.buoni_pasto=parseFloat(document.getElementById('buoni_pasto').value)||0;
+  S.guadagno_annuo=parseFloat(document.getElementById('guadagno_annuo').value)||0;
+  saveS(); liveSpese(); renderDashboard();
+}
+function saveRisp(){
+  S.risp_effettivi=parseFloat(document.getElementById('risp_eff_input').value)||0;
+  S.risp_previsti=parseFloat(document.getElementById('risp_prev_input').value)||0;
+  S.storico[S.storico.length-1].r=Math.round(S.risp_effettivi);
+  S.storico[S.storico.length-1].p=Math.round(S.conto1+S.conto2+S.mf_now+S.xeon_now);
+  saveS(); renderDashboard(); renderStorico();
+}
+
+// --- CARTA ---
+function renderCC(){
+  const rList=(id,arr,key)=>{
+    document.getElementById(id).innerHTML=arr.map((r,i)=>`
+      <div style="display:grid;grid-template-columns:1fr 1fr 36px;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);align-items:center">
+        <input type="text" value="${r.d}" onchange="${key}[${i}].d=this.value;saveS();renderDashboard()">
+        <input type="number" step="0.01" value="${r.v}" onchange="${key}[${i}].v=parseFloat(this.value)||0;updateCC()">
+        <button style="background:none;border:none;cursor:pointer;color:#E24B4A;font-size:16px;padding:4px" onclick="${key}.splice(${i},1);renderCC()" aria-label="Elimina"><i class="ti ti-trash"></i></button>
+      </div>`).join('');
+  };
+  rList('cc-list-now',S.cc_now,'S.cc_now');
+  rList('cc-list-next',S.cc_next,'S.cc_next');
+  updateCC();
+}
+function addCC(w){
+  if(w==='now') S.cc_now.push({d:'',v:0});
+  else S.cc_next.push({d:'',v:0});
+  renderCC();
+}
+function updateCC(){
+  const tn=document.getElementById('cc-tot-now');if(tn)tn.textContent=EUR(S.cc_now.reduce((s,r)=>s+r.v,0));
+  const tx=document.getElementById('cc-tot-next');if(tx)tx.textContent=EUR(S.cc_next.reduce((s,r)=>s+r.v,0));
+  saveS(); renderDashboard();
+}
+
+// --- IMPORT BANCA ---
+function handleDrop(e){e.preventDefault();document.getElementById('drop-zone').classList.remove('drag');handleFile(e.dataTransfer.files[0]);}
+function handleFile(file){
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const wb=XLSX.read(e.target.result,{type:'array',cellDates:true});
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      const raw=XLSX.utils.sheet_to_json(ws,{header:1,raw:false,dateNF:'yyyy-mm-dd'});
+      let hRow=-1;
+      for(let i=0;i<raw.length;i++){if(raw[i]&&raw[i][0]==='Data'&&raw[i][1]==='Operazione'){hRow=i;break;}}
+      if(hRow===-1){showBS('Header non trovato. Verifica che sia un file Intesa Sanpaolo.','err');return;}
+      const rows=[];
+      for(let i=hRow+1;i<raw.length;i++){
+        const r=raw[i];if(!r||!r[0])continue;
+        let d;const ds=r[0];
+        if(typeof ds==='string'&&ds.includes('/')){const p=ds.split('/');d=new Date(p[2],p[1]-1,p[0]);}
+        else if(ds instanceof Date){d=ds;}
+        else{d=new Date(ds);}
+        if(isNaN(d))continue;
+        const imp=parseFloat(String(r[7]).replace(',','.'))||0;
+        rows.push({
+          data:d,dataStr:d.toLocaleDateString('it-IT'),
+          operazione:(r[1]||'').trim().substring(0,60),
+          dettagli:(r[2]||'').trim().substring(0,80),
+          conto:(r[3]||'').trim(),stato:(r[4]||'').trim(),
+          categoria:(r[5]||'Altro').trim(),
+          importo:imp,tipo:imp>=0?'entrata':'uscita',
+          mese:MESI[d.getMonth()]+' '+d.getFullYear(),
+          meseKey:d.getFullYear()*100+d.getMonth()
+        });
+      }
+      if(!rows.length){showBS('Nessuna riga valida trovata nel file.','err');return;}
+      pendingRows=rows;
+      showPreview(file.name,rows);
+    }catch(err){showBS('Errore nella lettura del file: '+err.message,'err');}
+  };
+  reader.readAsArrayBuffer(file);
+}
+function showPreview(fname,rows){
+  document.getElementById('preview-card').style.display='block';
+  const ent=rows.filter(r=>r.tipo==='entrata'), usc=rows.filter(r=>r.tipo==='uscita');
+  document.getElementById('preview-info').innerHTML=`<b>${fname}</b> — <b>${rows.length}</b> movimenti &nbsp;|&nbsp; <span style="color:#1D9E75">${ent.length} entrate</span> &nbsp;|&nbsp; <span style="color:#E24B4A">${usc.length} uscite</span>`;
+  document.getElementById('preview-table').innerHTML=
+    `<thead><tr><th>Data</th><th>Operazione</th><th>Categoria</th><th style="text-align:right">Importo</th></tr></thead><tbody>`+
+    rows.slice(0,5).map(r=>`<tr><td>${r.dataStr}</td><td>${r.operazione}</td><td><span class="badge ${r.tipo}" style="font-size:11px">${r.categoria}</span></td><td style="text-align:right;color:${r.importo>=0?'#1D9E75':'#E24B4A'}">${EUR(r.importo)}</td></tr>`).join('')+
+    (rows.length>5?`<tr><td colspan="4" style="text-align:center;font-size:11px;color:var(--text3)">… e altri ${rows.length-5} movimenti</td></tr>`:'')+
+    `</tbody>`;
+}
+function importData(){
+  if(!pendingRows.length)return;
+  const ex=new Set(allMov.map(r=>`${r.dataStr}|${r.operazione}|${r.importo}`));
+  let added=0;
+  pendingRows.forEach(r=>{if(!ex.has(`${r.dataStr}|${r.operazione}|${r.importo}`)){allMov.push(r);added++;}});
+  allMov.sort((a,b)=>b.data-a.data);
+  pendingRows=[];clearPreview();
+  showBS(`✓ ${added} movimenti importati correttamente.`,'ok');
+  updateBancaFilters();
+  document.getElementById('banca-content').style.display='block';
+  renderMovimenti();renderBancaCharts();
+}
+function clearPreview(){pendingRows=[];document.getElementById('preview-card').style.display='none';document.getElementById('file-input').value='';}
+function showBS(msg,type){const el=document.getElementById('banca-status');el.textContent=msg;el.className='status-bar '+type;setTimeout(()=>el.className='status-bar',5000);}
+function updateBancaFilters(){
+  const mesi=[...new Set(allMov.map(r=>r.mese))].sort((a,b)=>{const[ma,ya]=a.split(' ');const[mb,yb]=b.split(' ');return(yb*100+MESI.indexOf(mb))-(ya*100+MESI.indexOf(ma));});
+  const cats=[...new Set(allMov.map(r=>r.categoria))].sort();
+  const fm=document.getElementById('filter-mese');
+  if(fm){const cv=fm.value;fm.innerHTML='<option value="">Tutti i mesi</option>'+mesi.map(m=>`<option value="${m}"${m===cv?' selected':''}>${m}</option>`).join('');}
+  const fc=document.getElementById('filter-cat');
+  if(fc)fc.innerHTML='<option value="">Tutte le categorie</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+}
+function getFiltered(){
+  let d=[...allMov];
+  const m=document.getElementById('filter-mese')?.value||'';
+  const t=document.getElementById('filter-tipo')?.value||'';
+  const c=document.getElementById('filter-cat')?.value||'';
+  const s=(document.getElementById('filter-search')?.value||'').toLowerCase();
+  if(m)d=d.filter(r=>r.mese===m);
+  if(t)d=d.filter(r=>r.tipo===t);
+  if(c)d=d.filter(r=>r.categoria===c);
+  if(s)d=d.filter(r=>r.operazione.toLowerCase().includes(s)||r.categoria.toLowerCase().includes(s));
+  return d;
+}
+function renderMovimenti(){
+  const data=getFiltered();curPage=1;renderMovPage(data);
+  const ent=data.filter(r=>r.tipo==='entrata').reduce((s,r)=>s+r.importo,0);
+  const usc=Math.abs(data.filter(r=>r.tipo==='uscita').reduce((s,r)=>s+r.importo,0));
+  document.getElementById('banca-kpi').innerHTML=`
+    <div class="metric"><label>Entrate</label><div class="val pos">${EUR(ent)}</div></div>
+    <div class="metric"><label>Uscite</label><div class="val neg">-${EUR(usc)}</div></div>
+    <div class="metric"><label>Saldo netto</label><div class="val ${ent-usc>=0?'pos':'neg'}">${EUR(ent-usc)}</div></div>
+    <div class="metric"><label>N° movimenti</label><div class="val">${data.length}</div></div>`;
+}
+function renderMovPage(data){
+  const pages=Math.ceil(data.length/PG);
+  const slice=data.slice((curPage-1)*PG,curPage*PG);
+  document.getElementById('mov-table').innerHTML=
+    `<thead><tr><th>Data</th><th>Operazione</th><th>Categoria</th><th>Stato</th><th style="text-align:right">Importo</th></tr></thead><tbody>`+
+    slice.map(r=>`<tr>
+      <td style="white-space:nowrap">${r.dataStr}</td>
+      <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.dettagli}">${r.operazione}</td>
+      <td><span class="badge ${r.tipo}" style="font-size:11px">${r.categoria}</span></td>
+      <td style="font-size:11px;color:var(--text2)">${r.stato==='CONTABILIZZATO'?'✓':'⏳'}</td>
+      <td style="text-align:right;font-weight:500;color:${r.importo>=0?'#1D9E75':'#E24B4A'}">${EUR(r.importo)}</td>
+    </tr>`).join('')+`</tbody>`;
+  const nav=document.getElementById('page-nav');
+  nav.innerHTML=pages<=1
+    ?`<span style="font-size:12px;color:var(--text2)">${data.length} movimenti totali</span>`
+    :`<span style="font-size:12px;color:var(--text2)">${data.length} mov.</span>
+      <button class="btn" onclick="changePage(-1)" ${curPage<=1?'disabled':''} style="padding:3px 10px;font-size:13px">‹</button>
+      <span style="font-size:12px">${curPage} / ${pages}</span>
+      <button class="btn" onclick="changePage(1)" ${curPage>=pages?'disabled':''} style="padding:3px 10px;font-size:13px">›</button>`;
+}
+function changePage(d){
+  const data=getFiltered();
+  const pages=Math.ceil(data.length/PG);
+  curPage=Math.max(1,Math.min(pages,curPage+d));
+  renderMovPage(data);
+}
+function renderBancaCharts(){
+  const usc=allMov.filter(r=>r.tipo==='uscita');
+  const byCat={};usc.forEach(r=>{byCat[r.categoria]=(byCat[r.categoria]||0)+Math.abs(r.importo);});
+  const cs=Object.entries(byCat).sort((a,b)=>b[1]-a[1]);
+  if(charts.cat)charts.cat.destroy();
+  if(cs.length)charts.cat=new Chart(document.getElementById('chartCat'),{
+    type:'doughnut',
+    data:{labels:cs.map(c=>c[0]),datasets:[{data:cs.map(c=>Math.round(c[1]*100)/100),backgroundColor:COLORS,borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:11},boxWidth:11,padding:6}}}}
+  });
+  const byM={};
+  allMov.forEach(r=>{if(!byM[r.mese])byM[r.mese]={e:0,u:0,k:r.meseKey};if(r.tipo==='entrata')byM[r.mese].e+=r.importo;else byM[r.mese].u+=Math.abs(r.importo);});
+  const ms=Object.entries(byM).sort((a,b)=>a[1].k-b[1].k);
+  if(charts.mesi)charts.mesi.destroy();
+  if(ms.length)charts.mesi=new Chart(document.getElementById('chartMesi'),{
+    type:'bar',
+    data:{
+      labels:ms.map(m=>m[0].split(' ').map((v,i)=>i===0?v.substring(0,3):v.slice(-2)).join(' ')),
+      datasets:[
+        {label:'Entrate',data:ms.map(m=>Math.round(m[1].e*100)/100),backgroundColor:'#5DCAA5',borderRadius:3},
+        {label:'Uscite',data:ms.map(m=>Math.round(m[1].u*100)/100),backgroundColor:'#F09595',borderRadius:3}
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:11},boxWidth:11}}},scales:{x:{ticks:{font:{size:10}}},y:{ticks:{callback:v=>'€'+Math.round(v)}}}}
+  });
+}
+function exportCSV(){
+  const data=getFiltered();
+  const rows=[['Data','Operazione','Dettagli','Categoria','Importo'],...data.map(r=>[r.dataStr,r.operazione,r.dettagli,r.categoria,r.importo])];
+  const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
+  a.download='movimenti_banca.csv';
+  a.click();
+}
+</script>
+</body>
+</html>
